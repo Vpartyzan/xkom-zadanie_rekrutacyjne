@@ -6,15 +6,29 @@ import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Table from '@material-ui/core/Table';
-import TableHead from '@material-ui/core/TableHead';
-import TableContainer from '@material-ui/core/TableContainer';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 
-import table from '../../data/hallSeats';
-
 class Order extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      table: [
+        ['','','','','','','','','','','','','',''],
+        ['','','','','','','','','','','','','',''],
+        ['','','','','','','','','','','','','',''],
+        ['','','','','','','','','','','','','',''],
+        ['','','','','','','','','','','','','',''],
+        ['','','','','','','','','','','','','',''],
+        ['','','','','','','','','','','','','',''],
+        ['','','','','','','','','','','','','',''],
+        ['','','','','','','','','','','','','',''],
+        ['','','','','','','','','','','','','',''], 
+      ],
+    }
+  }
 
   componentDidMount() {
     const { loadSeats } = this.props;
@@ -32,14 +46,16 @@ class Order extends React.Component {
   tableCell = (seat) => {
     for (let i=0; i < 14; i++) {
       if (seat == '') {
-        return <TableCell></TableCell>
+        return <TableCell className={styles.empty}></TableCell>
       } else {
-        return <TableCell>{this.prepareSeat(seat)}</TableCell>
+        return <TableCell className={styles.y}>{this.prepareSeat(seat)}</TableCell>
       }
     }; 
   }
 
   tableRow() {
+    const { table } = this.state;
+
     for (let row in table) {
       return <TableRow>{table[row].map( seat => this.tableCell(seat))}</TableRow>     
     };
@@ -47,6 +63,7 @@ class Order extends React.Component {
 
   render() {
     const { seats } = this.props;
+    const { table } = this.state;
     
     seats.map( seat => {
       switch(String(seat.cords.x)) {

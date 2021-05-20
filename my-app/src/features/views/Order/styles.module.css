@@ -27,3 +27,13 @@
 .helper {
   padding-top: 40px;
 }
+
+.y {
+  padding: 0px;
+  width: 70px;
+}
+
+.empty {
+  padding: 0px;
+  width: 35px;
+}
