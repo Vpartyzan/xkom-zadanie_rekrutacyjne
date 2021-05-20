@@ -1,0 +1,29 @@
+.seats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  max-width: 60rem;
+}
+
+.seat {
+  margin: 0.2rem;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.chosenSeat {
+  margin: 0.2rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: #fffb00;
+}
+
+.container {
+  padding-top: 20px;
+  min-width: 1500px;
+  max-width: 1500px;
+}
+
+.helper {
+  padding-top: 40px;
+}
