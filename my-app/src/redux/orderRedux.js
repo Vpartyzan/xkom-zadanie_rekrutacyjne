@@ -2,7 +2,8 @@ import axios from 'axios';
 import { api } from '../settings';
 
 /* selectors */
-export const getSeats = ({seats}) => seats.data;
+export const getSeats = ({ seats }) => seats.data;
+export const getChosenSeats = ({ seats }) => seats.chosenSeat;
 export const getRequests = ({ seats }) => seats.requests;
 
 /* action name creator */
@@ -41,26 +42,11 @@ export const loadSeatsRequest = () => {
   };
 };
 
-export const addSeatRequest = (seat) => {
-  return async dispatch => {
-
-    dispatch(startRequest({ name: 'ADD_SEAT' }));
-    try {
-      let res = await axios.post(`${api.url}/seats`, seat);      
-      dispatch(addSeat(res));
-      dispatch(endRequest({ name: 'ADD_SEAT' }));
-      
-    } catch(e) {
-      dispatch(errorRequest({ name: 'ADD_SEAT', error: e.message }));
-    }
-
-  };
-};
-
 /* INITIAL STATE */
 
 const initialState = {
   data: [],
+  chosenSeat: [],
   requests: [],
 };
 
@@ -70,7 +56,7 @@ export default function reducer(statePart = initialState, action = {}) {
     case LOAD_SEATS: 
       return { ...statePart, data: [...action.payload] };
     case ADD_SEAT: 
-      return { ...statePart, data: [...statePart.data, action.payload] }
+      return { ...statePart, chosenSeat: [...statePart.chosenSeat, action.payload] }
     case START_REQUEST:
       return { ...statePart, requests: {...statePart.requests, [action.payload.name]: { pending: true, error: null, success: false }} };
     case END_REQUEST:

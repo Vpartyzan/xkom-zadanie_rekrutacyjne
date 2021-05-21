@@ -11,10 +11,25 @@
   height: 2.5rem;
 }
 
+.seatFree {
+  margin: 0.2rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: #66ff00;
+}
+
+.seatFree:hover {
+  background-color: #66ff00;
+}
+
 .chosenSeat {
   margin: 0.2rem;
   width: 2.5rem;
   height: 2.5rem;
+  background-color: #fffb00;
+}
+
+.chosenSeat:hover {
   background-color: #fffb00;
 }
 
