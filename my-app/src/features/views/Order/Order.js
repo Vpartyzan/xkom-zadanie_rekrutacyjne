@@ -91,7 +91,7 @@ class Order extends React.Component {
 
   tableCell(seat) {
     for (let i=0; i < 14; i++) {
-      if (seat == '') {
+      if (seat === '') {
         return <TableCell className={styles.empty}></TableCell>
       } else {
         return <TableCell className={styles.y}>{this.prepareSeat(seat)}</TableCell>
@@ -163,7 +163,9 @@ class Order extends React.Component {
               <Button variant="contained" className={styles.chosenSeat} /> - Twój wybór
             </Grid>
             <Grid item>
-              <Button  
+              <Button 
+                component={NavLink} 
+                to={`${process.env.PUBLIC_URL}/success`} 
                 variant="contained" color="primary" 
                 onClick={ (e) => this.reserved(e)}
               >Rezerwuj</Button>

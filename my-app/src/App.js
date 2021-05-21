@@ -5,6 +5,7 @@ import { StylesProvider } from '@material-ui/core/styles';
 
 import StartPage from './features/views/StartPage/StartPage.js';
 import Order from './features/views/Order/OrderContainer';
+import Success from './features/views/Success/SuccessContainer';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <Switch>
         <Route exact path={`${process.env.PUBLIC_URL}/`} component={StartPage} />
         <Route exact path={`${process.env.PUBLIC_URL}/order`} component={Order} />
+        <Route exact path={`${process.env.PUBLIC_URL}/success`} component={Success} />
       </Switch>
     </StylesProvider>    
   );
