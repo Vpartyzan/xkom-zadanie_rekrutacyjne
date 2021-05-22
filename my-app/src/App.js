@@ -3,7 +3,7 @@ import { Switch, Route} from 'react-router-dom';
 
 import { StylesProvider } from '@material-ui/core/styles';
 
-import StartPage from './features/views/StartPage/StartPage.js';
+import StartPage from './features/views/StartPage/StartContainer';
 import Order from './features/views/Order/OrderContainer';
 import Success from './features/views/Success/SuccessContainer';
 

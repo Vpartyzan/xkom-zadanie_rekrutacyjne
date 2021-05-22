@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 import Container from '@material-ui/core/Container';
 import Card from '@material-ui/core/Card';
@@ -12,50 +12,151 @@ import Button from '@material-ui/core/Button';
 
 import styles from './styles.module.css';
 
-function StartPage() {
-  const [state, setState] = React.useState({
-    checked: false,
-  });
+class StartPage extends React.Component {
+  constructor(props) {
+    super(props);
 
-  const handleChange = (event) => {
-    setState({ ...state, [event.target.name]: event.target.checked });
-  };
+    this.state = {
+      checked: false,
+      quantity: '',
+      table: [
+        ['','','','','','','','','','','','','','',''],
+        ['','','','','','','','','','','','','','',''],
+        ['','','','','','','','','','','','','','',''],
+        ['','','','','','','','','','','','','','',''],
+        ['','','','','','','','','','','','','','',''],
+        ['','','','','','','','','','','','','','',''],
+        ['','','','','','','','','','','','','','',''],
+        ['','','','','','','','','','','','','','',''],
+        ['','','','','','','','','','','','','','',''],
+        ['','','','','','','','','','','','','','',''], 
+      ],
+    }
+  }
 
-  return (
-    <Container maxWidth='sm' className={styles.container}>
-      <Card className={styles.card}>
-        <CardContent className={styles.card}>
-          <Grid
-            container
-            direction="column"
-            justify="center"
-            alignItems="center"
-            spacing={3}
-          >
-            <Grid item>
-              <TextField id="standard-basic" label="Liczba miejsc" />
-            </Grid>
-            <Grid item>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={state.checked}
-                    onChange={handleChange}
-                    name="checked"
-                    color="primary"
-                  />
-                }
-                label="Czy miejsca mają być obok siebie?"
-              />
-            </Grid>
-            <Grid item>
-              <Button component={NavLink} variant="contained" color="primary" to={`${process.env.PUBLIC_URL}/order`}>Wybierz miejsca</Button>
-            </Grid>            
-          </Grid>          
-        </CardContent>        
-      </Card>      
-    </Container>
-  );
+  static propTypes = {
+    seats: PropTypes.array,
+    loadTable: PropTypes.func,
+    loadSeats: PropTypes.func,
+    addQuantitySeats: PropTypes.func,
+  }
+
+  componentDidMount() {
+    const { loadSeats } = this.props;
+    loadSeats();    
+  }
+
+  prepareHall() {    
+    const { seats, loadTable } = this.props;
+    const { table } = this.state;    
+
+    seats.map( seat => {
+      switch(String(seat.cords.x)) {
+        case '0':
+          table[0].splice(seat.cords.y, 1, seat);
+          break
+        case '1':
+          table[1].splice(seat.cords.y, 1, seat);
+          break
+        case '2':
+          table[2].splice(seat.cords.y, 1, seat);
+          break
+        case '3':
+          table[3].splice(seat.cords.y, 1, seat);
+          break
+        case '4':
+          table[4].splice(seat.cords.y, 1, seat);
+          break
+        case '5':
+          table[5].splice(seat.cords.y, 1, seat);
+          break
+        case '6':
+          table[6].splice(seat.cords.y, 1, seat);
+          break
+        case '7':
+          table[7].splice(seat.cords.y, 1, seat);
+          break
+        case '8':
+          table[8].splice(seat.cords.y, 1, seat);
+          break
+        case '9':
+          table[9].splice(seat.cords.y, 1, seat);
+          break
+      }
+    });
+    
+    loadTable(table);
+  }
+
+  handleChange = (event) => {
+    this.setState({ ...this.state, [event.target.name]: event.target.checked });
+  }
+
+  quantityChange = (event) => {
+    event.preventDefault();
+
+    this.setState({ ...this.state, quantity: event.target.value }); 
+  }
+
+  submit = () => {
+    const { addQuantitySeats } = this.props;
+    const { checked, quantity } = this.state;
+
+    if ( checked && quantity < 5) {
+      this.prepareHall();
+      addQuantitySeats({checked, quantity});
+      this.props.history.push('/order')
+    } else if (!checked) {
+      this.prepareHall();
+      addQuantitySeats({checked, quantity});
+      this.props.history.push('/order')
+    } else {      
+      alert('maksymalna liczba miejsc obok: 4')
+    }   
+  }
+
+  render() {
+
+    return (
+      <Container maxWidth='sm' className={styles.container}>
+        <Card className={styles.card}>
+          <CardContent className={styles.card}>
+            <Grid
+              container
+              direction="column"
+              justify="center"
+              alignItems="center"
+              spacing={3}
+            >
+              <Grid item>
+                <TextField id="standard-basic" label="Liczba miejsc" onChange={e => this.quantityChange(e)}/>
+              </Grid>
+              <Grid item>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={this.state.checked}
+                      onChange={ e => this.handleChange(e)}
+                      name="checked"
+                      color="primary"
+                    />
+                  }
+                  label="Czy miejsca mają być obok siebie? (max. 4)"
+                />
+              </Grid>
+              <Grid item>
+                <Button 
+                  variant="contained" 
+                  color="primary" 
+                  onClick={e => this.submit(e)}
+                >Wybierz miejsca</Button>
+              </Grid>            
+            </Grid>          
+          </CardContent>        
+        </Card>      
+      </Container>
+    );
+  }
 }
 
 export default StartPage;

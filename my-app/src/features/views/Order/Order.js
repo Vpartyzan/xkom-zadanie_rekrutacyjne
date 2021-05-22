@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
 import styles from './styles.module.css';
 
@@ -10,73 +11,75 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
+import { TableSortLabel } from '@material-ui/core';
 
 class Order extends React.Component {
   constructor(props) {
     super(props)
 
-    this.state = {
-      table: [
-        ['','','','','','','','','','','','','',''],
-        ['','','','','','','','','','','','','',''],
-        ['','','','','','','','','','','','','',''],
-        ['','','','','','','','','','','','','',''],
-        ['','','','','','','','','','','','','',''],
-        ['','','','','','','','','','','','','',''],
-        ['','','','','','','','','','','','','',''],
-        ['','','','','','','','','','','','','',''],
-        ['','','','','','','','','','','','','',''],
-        ['','','','','','','','','','','','','',''], 
-      ],
-      order: []
+    this.state = {      
+      order: [],
     }
   }
 
+  static propTypes = {
+    seats: PropTypes.array,
+    table: PropTypes.array,    
+    quantity: PropTypes.array,
+    loadSeats: PropTypes.func,
+    addSeat: PropTypes.func,
+  }
+
   componentDidMount() {
-    const { loadSeats } = this.props;
+    const { loadSeats, quantity } = this.props;
     loadSeats();
+    
+    this.randomSeats();
+    
   }
+
+  randomSeats() {
+    const { quantity, seats, table } = this.props;
+    let tempOrder = [];
+
+    if (quantity[0].quantity > 1) {
+
+      for (let x = 0; x < 10; x++ ) {
+
+        if (tempOrder.length !== +quantity[0].quantity) {
   
-  prepareHall() {    
-    const { seats } = this.props;
-    const { table } = this.state;
-
-    seats.map( seat => {
-      switch(String(seat.cords.x)) {
-        case '0':
-          table[0].splice(seat.cords.y, 1, seat);
-          break
-        case '1':
-          table[1].splice(seat.cords.y, 1, seat);
-          break
-        case '2':
-          table[2].splice(seat.cords.y, 1, seat);
-          break
-        case '3':
-          table[3].splice(seat.cords.y, 1, seat);
-          break
-        case '4':
-          table[4].splice(seat.cords.y, 1, seat);
-          break
-        case '5':
-          table[5].splice(seat.cords.y, 1, seat);
-          break
-        case '6':
-          table[6].splice(seat.cords.y, 1, seat);
-          break
-        case '7':
-          table[7].splice(seat.cords.y, 1, seat);
-          break
-        case '8':
-          table[8].splice(seat.cords.y, 1, seat);
-          break
-        case '9':
-          table[9].splice(seat.cords.y, 1, seat);
-          break
+          for (let y = 0; y < 15; y++) {
+            const randomSeat = table[x][y].id;
+      
+            if (tempOrder.length !== +quantity[0].quantity) {
+  
+              if ( quantity[0].checked && randomSeat && seats.some( seat => seat.id === randomSeat && !seat.reserved)) {
+                tempOrder.push(randomSeat);
+  
+                for (let n = 1; n < +quantity[0].quantity; n++) {
+  
+                  if ( table[x][y+n] && seats.some( seat => seat.id === table[x][y+n].id && !seat.reserved) ) {
+                    tempOrder.push(table[x][y+n].id);
+                  } else {
+                    tempOrder = [];
+                  }
+                }
+              } else if (randomSeat && seats.some( seat => seat.id === randomSeat && !seat.reserved)) {
+                tempOrder.push(randomSeat);
+              }
+            } else {
+              this.setState({ order: tempOrder });
+              break;
+            }
+          }
+        } else {
+          break;
+        }
       }
-    });
-  }
-
+    }    
+  } 
+  
+  
   prepareSeat(seat) {
     const { order } = this.state;
 
@@ -89,23 +92,24 @@ class Order extends React.Component {
     }
   }
 
-  tableCell(seat) {
-    for (let i=0; i < 14; i++) {
-      if (seat === '') {
-        return <TableCell className={styles.empty}></TableCell>
-      } else {
-        return <TableCell className={styles.y}>{this.prepareSeat(seat)}</TableCell>
-      }
-    }; 
-  }
-
   tableRow() {
-    const { table } = this.state;
+    const { table } = this.props;
 
     for (let row in table) {
       return <TableRow>{table[row].map( seat => this.tableCell(seat))}</TableRow>     
     };
   }
+
+  tableCell(seat) {
+    for (let i=0; i < 14; i++) {
+
+      if (seat === '') {
+        return <TableCell className={styles.empty}></TableCell>
+      } else {
+        return <TableCell className={styles.y}>{this.prepareSeat(seat)}</TableCell>
+      }
+    } 
+  }  
 
   setSeat(e) {
     const { order } = this.state;
@@ -117,16 +121,14 @@ class Order extends React.Component {
       : this.setState({ order: [ ...order, e.target.textContent ] });  
   }
 
-  reserved(e) {
+  reserved() {
     const { order } = this.state;
     const { seats, addSeat } = this.props;
-
-    //e.preventDefault();
 
     if (!order.length) {
       alert('You must choose some seat');
     } else {
-      seats.map( seat => {
+      seats.map( seat => {        
         if (order.some( item => item === seat.id)) {
           seat.reserved = 'true';
           addSeat(seat);
@@ -136,9 +138,7 @@ class Order extends React.Component {
   }
 
   render() {
-    const { table } = this.state;
-    
-    this.prepareHall();    
+    const { table } = this.props;       
 
     return (
       <Container maxWidth='sm' className={styles.container}>
