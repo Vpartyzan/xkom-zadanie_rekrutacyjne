@@ -107,11 +107,18 @@ class StartPage extends React.Component {
       this.prepareHall();
       addQuantitySeats({checked, quantity});
       this.props.history.push('/order')
-    } else if (!checked) {
+    } else if (!checked && quantity <= this.freeSeats()) {
       this.prepareHall();
       addQuantitySeats({checked, quantity});
       this.props.history.push('/order')
     }  
+  }
+
+  freeSeats() {
+    const { seats } = this.props;
+    const freeSeats = seats.filter( seat => seat.reserved === false);
+
+    return freeSeats.length - 1;
   }
 
   render() {
@@ -130,6 +137,7 @@ class StartPage extends React.Component {
               <Grid item>
                 <TextField id="standard-basic" label="Liczba miejsc" onChange={e => this.quantityChange(e)}/>
               </Grid>
+              {<Alert severity="info">Wolnych miejsc: {this.freeSeats()}</Alert>}
               <Grid item>
                 <FormControlLabel
                   control={
@@ -151,7 +159,8 @@ class StartPage extends React.Component {
                 >Wybierz miejsca</Button>
               </Grid>
               {(this.state.checked && this.state.quantity > 4) ? <Alert severity="warning">maksymalna liczba miejsc obok: 4</Alert> : ''}
-              {(this.state.quantity !== '' && this.state.quantity <= 0) ? <Alert severity="warning">minimalna liczba miejsc: 1</Alert> : ''}            
+              {(this.state.quantity !== '' && this.state.quantity <= 0) ? <Alert severity="warning">minimalna liczba miejsc: 1</Alert> : ''}
+              {(this.state.quantity !== '' && this.state.quantity > this.freeSeats()) ? <Alert severity="warning">Liczba wybranych miejsc, nie może być większa niż liczba wolnych miejsc.</Alert> : ''}            
             </Grid>          
           </CardContent>        
         </Card>      

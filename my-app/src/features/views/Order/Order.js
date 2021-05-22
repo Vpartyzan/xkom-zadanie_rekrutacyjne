@@ -40,41 +40,45 @@ class Order extends React.Component {
     const { quantity, seats, table } = this.props;
     let tempOrder = [];
 
-    if (quantity[0].quantity > 1) {
+    if (!quantity[0]) {
+      this.props.history.push('/');
+    } else {
+      if (quantity[0].quantity > 1) {
 
-      for (let x = 0; x < 10; x++ ) {
-
-        if (tempOrder.length !== +quantity[0].quantity) {
+        for (let x = 0; x < 10; x++ ) {
   
-          for (let y = 0; y < 15; y++) {
-            const randomSeat = table[x][y].id;
-      
-            if (tempOrder.length !== +quantity[0].quantity) {
-  
-              if ( quantity[0].checked && randomSeat && seats.some( seat => seat.id === randomSeat && !seat.reserved)) {
-                tempOrder.push(randomSeat);
-  
-                for (let n = 1; n < +quantity[0].quantity; n++) {
-  
-                  if ( table[x][y+n] && seats.some( seat => seat.id === table[x][y+n].id && !seat.reserved) ) {
-                    tempOrder.push(table[x][y+n].id);
-                  } else {
-                    tempOrder = [];
+          if (tempOrder.length !== +quantity[0].quantity) {
+    
+            for (let y = 0; y < 15; y++) {
+              const randomSeat = table[x][y].id;
+        
+              if (tempOrder.length !== +quantity[0].quantity) {
+    
+                if ( quantity[0].checked && randomSeat && seats.some( seat => seat.id === randomSeat && !seat.reserved)) {
+                  tempOrder.push(randomSeat);
+    
+                  for (let n = 1; n < +quantity[0].quantity; n++) {
+    
+                    if ( table[x][y+n] && seats.some( seat => seat.id === table[x][y+n].id && !seat.reserved) ) {
+                      tempOrder.push(table[x][y+n].id);
+                    } else {
+                      tempOrder = [];
+                    }
                   }
+                } else if (randomSeat && seats.some( seat => seat.id === randomSeat && !seat.reserved)) {
+                  tempOrder.push(randomSeat);
                 }
-              } else if (randomSeat && seats.some( seat => seat.id === randomSeat && !seat.reserved)) {
-                tempOrder.push(randomSeat);
+              } else {
+                this.setState({ order: tempOrder });
+                break;
               }
-            } else {
-              this.setState({ order: tempOrder });
-              break;
             }
+          } else {
+            break;
           }
-        } else {
-          break;
         }
       }
-    }    
+    }        
   } 
   
   
@@ -90,21 +94,13 @@ class Order extends React.Component {
     }
   }
 
-  tableRow() {
-    const { table } = this.props;
-
-    for (let row in table) {
-      return <TableRow>{table[row].map( seat => this.tableCell(seat))}</TableRow>     
-    };
-  }
-
   tableCell(seat) {
     for (let i=0; i < 14; i++) {
 
       if (seat === '') {
         return <TableCell className={styles.empty}></TableCell>
       } else {
-        return <TableCell className={styles.y}>{this.prepareSeat(seat)}</TableCell>
+        return <TableCell key={String(seat.cords.x) + String(seat.cords.y)} className={styles.y}>{this.prepareSeat(seat)}</TableCell>
       }
     } 
   }  
