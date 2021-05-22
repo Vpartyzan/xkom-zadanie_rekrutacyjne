@@ -9,6 +9,7 @@ import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
+import Alert from '@material-ui/lab/Alert';
 
 import styles from './styles.module.css';
 
@@ -110,9 +111,7 @@ class StartPage extends React.Component {
       this.prepareHall();
       addQuantitySeats({checked, quantity});
       this.props.history.push('/order')
-    } else {      
-      alert('maksymalna liczba miejsc obok: 4')
-    }   
+    }  
   }
 
   render() {
@@ -150,7 +149,9 @@ class StartPage extends React.Component {
                   color="primary" 
                   onClick={e => this.submit(e)}
                 >Wybierz miejsca</Button>
-              </Grid>            
+              </Grid>
+              {(this.state.checked && this.state.quantity > 4) ? <Alert severity="warning">maksymalna liczba miejsc obok: 4</Alert> : ''}
+              {(this.state.quantity !== '' && this.state.quantity <= 0) ? <Alert severity="warning">minimalna liczba miejsc: 1</Alert> : ''}            
             </Grid>          
           </CardContent>        
         </Card>      
