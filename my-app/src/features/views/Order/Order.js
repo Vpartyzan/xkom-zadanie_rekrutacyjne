@@ -11,7 +11,6 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
-import { TableSortLabel } from '@material-ui/core';
 
 class Order extends React.Component {
   constructor(props) {
@@ -31,11 +30,10 @@ class Order extends React.Component {
   }
 
   componentDidMount() {
-    const { loadSeats, quantity } = this.props;
-    loadSeats();
-    
-    this.randomSeats();
-    
+    const { loadSeats } = this.props;
+
+    loadSeats();    
+    this.randomSeats();    
   }
 
   randomSeats() {
